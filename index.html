@@ -356,16 +356,15 @@ composer.addPass(
 );
 
 
-const bloom =
-    new UnrealBloomPass(
-        new THREE.Vector2(
-            window.innerWidth,
-            window.innerHeight
-        ),
-        0.55,
-        0.35,
-        0.08
-    );
+const bloom = new UnrealBloomPass(
+    new THREE.Vector2(
+        window.innerWidth,
+        window.innerHeight
+    ),
+    isMobile ? 0.18 : 0.4,
+    isMobile ? 0.22 : 0.35,
+    0.08
+);
 
 
 composer.addPass(
@@ -901,7 +900,7 @@ function createHeartParticles() {
                     gl_FragColor =
                         vec4(
                             finalColor,
-                            glow * .9
+                            glow * .5
                         );
                 }
 
