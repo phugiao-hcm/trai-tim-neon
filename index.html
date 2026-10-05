@@ -142,6 +142,13 @@ canvas {
 </div>
 
 
+<audio
+    id="bgMusic"
+    src="music.mp3"
+    loop
+    preload="auto"
+></audio>
+
 <!-- ==========================================
      THREE.JS
 =========================================== -->
@@ -361,8 +368,8 @@ const bloom = new UnrealBloomPass(
         window.innerWidth,
         window.innerHeight
     ),
-    isMobile ? 0.18 : 0.4,
-    isMobile ? 0.22 : 0.35,
+    isMobile ? 0.21 : 0.4,
+    isMobile ? 0.32 : 0.35,
     0.08
 );
 
@@ -900,7 +907,7 @@ function createHeartParticles() {
                     gl_FragColor =
                         vec4(
                             finalColor,
-                            glow * .5
+                            glow * .9
                         );
                 }
 
@@ -1886,6 +1893,72 @@ canvas.addEventListener(
         isDragging =
             false;
     }
+);
+
+
+
+/* =====================================================
+   BACKGROUND MUSIC
+===================================================== */
+
+const bgMusic =
+    document.getElementById("bgMusic");
+
+bgMusic.volume = 0.35;
+
+async function playMusic() {
+    try {
+        await bgMusic.play();
+    } catch (error) {
+        console.log(
+            "Autoplay bị trình duyệt chặn"
+        );
+    }
+}
+
+/*
+ * Thử tự động phát khi mở trang
+ */
+window.addEventListener(
+    "load",
+    () => {
+        playMusic();
+    }
+);
+
+/*
+ * Mobile:
+ * Khi người dùng chạm vào màn hình lần đầu
+ * thì nhạc sẽ được phép phát.
+ */
+const startMusic =
+    () => {
+
+        if (bgMusic.paused) {
+            playMusic();
+        }
+
+        document.removeEventListener(
+            "touchstart",
+            startMusic
+        );
+
+        document.removeEventListener(
+            "pointerdown",
+            startMusic
+        );
+    };
+
+document.addEventListener(
+    "touchstart",
+    startMusic,
+    { once: true }
+);
+
+document.addEventListener(
+    "pointerdown",
+    startMusic,
+    { once: true }
 );
 
 
