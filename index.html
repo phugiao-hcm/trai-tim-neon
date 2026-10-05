@@ -8,7 +8,8 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
 >
 
-<title>Love Particle 3D</title>
+<title>Happy Anniversary 3D</title>
+  <link rel="icon" type="image/x-icon" href="images/heart.png">
 
 <style>
 
@@ -135,7 +136,7 @@ canvas {
     <canvas id="canvas"></canvas>
 
     <div class="message">
-        YÊU EM MÃI ❤️
+        HAPPY ANNIVERSARY ❤️
     </div>
 
 </div>
@@ -888,13 +889,13 @@ function createHeartParticles() {
                     finalColor +=
                         vec3(
                             1.0,
-                            .05,
-                            .35
+                            .02,
+                            .12
                         )
                         *
                         glow
                         *
-                        .45;
+                        .015;
 
 
                     gl_FragColor =
@@ -1390,9 +1391,7 @@ function createTextTexture(
     );
 
 
-    ctx.font =
-        "bold 26px Arial";
-
+    ctx.font = "bold 32px Arial";
 
     ctx.textAlign =
         "center";
@@ -1510,11 +1509,11 @@ function createTextRing() {
 
             sprite.scale.set(
                 isMobile
-                    ? 2.3
+                    ? 3.3
                     : 3.2,
 
                 isMobile
-                    ? .45
+                    ? .65
                     : .62,
 
                 1
