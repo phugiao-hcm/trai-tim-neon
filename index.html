@@ -141,6 +141,11 @@ canvas {
 #galaxyStars { z-index: 1; }
 #fallingMessages { z-index: 3; }
 
+#fallingMessages.hug-transition {
+    opacity: 0;
+    transition: opacity 1.8s ease;
+}
+
 .galaxy-star {
     position: absolute;
     width: 1.5px;
@@ -216,6 +221,200 @@ canvas {
     }
 }
 
+
+/* =========================================================
+   COUPLE HUG SCENE
+   Sau 20 giây chữ rơi: hai người xuất hiện và ôm nhau
+========================================================= */
+
+#hugScene {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(.92);
+    transition:
+        opacity 2.2s ease,
+        transform 2.8s cubic-bezier(.2,.8,.2,1),
+        visibility 2.2s ease;
+}
+
+#hugScene.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.hug-glow {
+    position: absolute;
+    width: min(60vw, 560px);
+    height: min(60vw, 560px);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle,
+            rgba(255, 130, 220, .25) 0%,
+            rgba(180, 70, 255, .12) 32%,
+            transparent 68%);
+    filter: blur(18px);
+    animation: hugGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes hugGlow {
+    from {
+        transform: scale(.88);
+        opacity: .55;
+    }
+    to {
+        transform: scale(1.08);
+        opacity: .95;
+    }
+}
+
+.hug-heart {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    width: 70px;
+    height: 70px;
+    transform: translateX(-50%) rotate(-45deg);
+    background: #ff4fae;
+    filter:
+        drop-shadow(0 0 8px #ff4fae)
+        drop-shadow(0 0 24px rgba(255, 55, 175, .85));
+    animation: hugHeartBeat 1.5s ease-in-out infinite;
+}
+
+.hug-heart::before,
+.hug-heart::after {
+    content: "";
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #ff4fae;
+}
+
+.hug-heart::before {
+    top: -35px;
+    left: 0;
+}
+
+.hug-heart::after {
+    top: 0;
+    left: 35px;
+}
+
+@keyframes hugHeartBeat {
+    0%, 100% {
+        transform: translateX(-50%) rotate(-45deg) scale(.92);
+    }
+    15% {
+        transform: translateX(-50%) rotate(-45deg) scale(1.08);
+    }
+    30% {
+        transform: translateX(-50%) rotate(-45deg) scale(.98);
+    }
+}
+
+.hug-couple {
+    position: relative;
+    width: min(70vw, 520px);
+    height: min(70vh, 570px);
+    filter:
+        drop-shadow(0 0 12px rgba(255, 90, 190, .42))
+        drop-shadow(0 0 32px rgba(150, 80, 255, .24));
+}
+
+.hug-couple svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.hug-couple .person {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+}
+
+.hug-couple .person-left {
+    animation: personLeft 3.2s ease-in-out infinite;
+}
+
+.hug-couple .person-right {
+    animation: personRight 3.2s ease-in-out infinite;
+}
+
+@keyframes personLeft {
+    0%, 100% { transform: translateX(-3px) rotate(-1deg); }
+    50% { transform: translateX(3px) rotate(1deg); }
+}
+
+@keyframes personRight {
+    0%, 100% { transform: translateX(3px) rotate(1deg); }
+    50% { transform: translateX(-3px) rotate(-1deg); }
+}
+
+.hug-title {
+    position: absolute;
+    left: 50%;
+    bottom: 8%;
+    transform: translateX(-50%);
+    width: 90%;
+    text-align: center;
+    color: rgba(255, 224, 246, .95);
+    font-size: clamp(17px, 3vw, 28px);
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-shadow:
+        0 0 8px #ff4fae,
+        0 0 20px #ff1493,
+        0 0 42px rgba(170, 70, 255, .8);
+    opacity: 0;
+    animation: hugTitleIn 2s 1.1s ease forwards;
+}
+
+@keyframes hugTitleIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.hug-spark {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+        0 0 6px #fff,
+        0 0 16px #ff75c8;
+    animation: hugSpark 2.8s ease-in-out infinite;
+}
+
+@keyframes hugSpark {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(15px) scale(.5);
+    }
+    35% {
+        opacity: 1;
+    }
+    70% {
+        opacity: .75;
+        transform: translateY(-35px) scale(1);
+    }
+}
+
 </style>
 </head>
 
@@ -232,6 +431,222 @@ canvas {
         <div class="galaxy-core"></div>
         <div id="galaxyStars"></div>
         <div id="fallingMessages"></div>
+
+        <div id="hugScene" aria-hidden="true">
+            <div class="hug-glow"></div>
+            <div class="hug-heart"></div>
+
+            <div class="hug-couple">
+                <svg viewBox="0 0 520 570" role="img" aria-label="Hai người ôm nhau">
+                    <defs>
+                        <linearGradient id="personGradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#fff0fa"/>
+                            <stop offset="35%" stop-color="#ff9fda"/>
+                            <stop offset="75%" stop-color="#ff4fae"/>
+                            <stop offset="100%" stop-color="#a94cff"/>
+                        </linearGradient>
+
+                        <linearGradient id="personGradient2" x1="1" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#e9dcff"/>
+                            <stop offset="38%" stop-color="#b47cff"/>
+                            <stop offset="75%" stop-color="#7654e8"/>
+                            <stop offset="100%" stop-color="#ff5eb8"/>
+                        </linearGradient>
+
+                        <radialGradient id="groundGlow">
+                            <stop offset="0%" stop-color="rgba(255,100,205,.55)"/>
+                            <stop offset="100%" stop-color="rgba(255,100,205,0)"/>
+                        </radialGradient>
+                    </defs>
+
+                    <!-- nền sáng dưới chân -->
+                    <ellipse
+                        cx="260"
+                        cy="535"
+                        rx="155"
+                        ry="25"
+                        fill="url(#groundGlow)"
+                        opacity=".8"
+                    />
+
+                    <!-- NGƯỜI BÊN TRÁI -->
+                    <g class="person person-left">
+                        <!-- đầu -->
+                        <circle
+                            cx="205"
+                            cy="155"
+                            r="42"
+                            fill="url(#personGradient)"
+                        />
+
+                        <!-- tóc -->
+                        <path
+                            d="M164 155
+                               C162 116 183 92 216 96
+                               C245 99 259 125 247 158
+                               C239 136 221 124 196 125
+                               C182 127 172 138 164 155Z"
+                            fill="#8b3d9e"
+                            opacity=".95"
+                        />
+
+                        <!-- thân -->
+                        <path
+                            d="M167 202
+                               C178 187 192 181 207 181
+                               C226 181 244 191 254 209
+                               L274 385
+                               C277 414 257 433 229 433
+                               L178 433
+                               C151 433 137 412 142 385Z"
+                            fill="url(#personGradient)"
+                        />
+
+                        <!-- chân trái -->
+                        <path
+                            d="M178 418
+                               C184 414 199 414 207 419
+                               L202 523
+                               C201 538 190 545 173 543
+                               L162 540
+                               C157 536 160 527 164 520Z"
+                            fill="#d95ebd"
+                        />
+
+                        <!-- chân phải -->
+                        <path
+                            d="M218 420
+                               C229 416 244 419 251 426
+                               L277 516
+                               C281 529 273 538 259 542
+                               L248 543
+                               C240 541 236 534 233 524Z"
+                            fill="#b24fbe"
+                        />
+
+                        <!-- cánh tay ôm người bên phải -->
+                        <path
+                            d="M238 215
+                               C267 207 295 220 317 242
+                               C330 255 329 272 316 281
+                               C304 289 291 284 282 273
+                               C264 252 249 247 229 251Z"
+                            fill="url(#personGradient)"
+                        />
+
+                        <!-- bàn tay -->
+                        <circle
+                            cx="311"
+                            cy="271"
+                            r="13"
+                            fill="#ffd8ef"
+                        />
+                    </g>
+
+                    <!-- NGƯỜI BÊN PHẢI -->
+                    <g class="person person-right">
+                        <!-- đầu -->
+                        <circle
+                            cx="315"
+                            cy="151"
+                            r="43"
+                            fill="url(#personGradient2)"
+                        />
+
+                        <!-- tóc -->
+                        <path
+                            d="M274 151
+                               C268 117 291 91 322 94
+                               C352 96 371 119 361 154
+                               C351 131 334 120 311 121
+                               C295 122 282 133 274 151Z"
+                            fill="#4c3b91"
+                            opacity=".95"
+                        />
+
+                        <!-- thân -->
+                        <path
+                            d="M278 199
+                               C290 185 304 180 319 181
+                               C338 181 354 191 365 208
+                               L379 385
+                               C382 413 362 433 335 433
+                               L285 433
+                               C257 433 240 412 245 385Z"
+                            fill="url(#personGradient2)"
+                        />
+
+                        <!-- chân trái -->
+                        <path
+                            d="M285 418
+                               C295 415 309 416 316 422
+                               L311 523
+                               C310 538 299 545 283 543
+                               L272 540
+                               C267 536 270 527 274 520Z"
+                            fill="#8156c7"
+                        />
+
+                        <!-- chân phải -->
+                        <path
+                            d="M325 420
+                               C337 416 351 419 358 426
+                               L384 516
+                               C388 529 380 538 366 542
+                               L355 543
+                               C347 541 343 534 340 524Z"
+                            fill="#a34fca"
+                        />
+
+                        <!-- cánh tay vòng qua người bên trái -->
+                        <path
+                            d="M283 213
+                               C256 205 227 219 204 242
+                               C191 255 191 271 204 281
+                               C216 290 229 284 238 273
+                               C256 253 271 247 291 251Z"
+                            fill="url(#personGradient2)"
+                        />
+
+                        <!-- bàn tay -->
+                        <circle
+                            cx="209"
+                            cy="271"
+                            r="13"
+                            fill="#eadbff"
+                        />
+                    </g>
+
+                    <!-- vòng tay sáng ở giữa -->
+                    <path
+                        d="M202 278
+                           C224 301 248 311 260 312
+                           C273 311 296 301 318 278"
+                        fill="none"
+                        stroke="#fff"
+                        stroke-width="5"
+                        stroke-linecap="round"
+                        opacity=".7"
+                        filter="drop-shadow(0 0 8px #ff65c5)"
+                    />
+
+                    <!-- ánh sáng nhỏ quanh hai người -->
+                    <circle cx="145" cy="245" r="3" fill="#fff"/>
+                    <circle cx="375" cy="235" r="3" fill="#fff"/>
+                    <circle cx="160" cy="355" r="2" fill="#ffb6e5"/>
+                    <circle cx="365" cy="350" r="2" fill="#c9aaff"/>
+                </svg>
+            </div>
+
+            <div class="hug-title">Mãi bên nhau nhé ❤️</div>
+
+            <span class="hug-spark" style="left:22%;top:35%;animation-delay:.2s"></span>
+            <span class="hug-spark" style="left:31%;top:48%;animation-delay:1.1s"></span>
+            <span class="hug-spark" style="left:70%;top:38%;animation-delay:.7s"></span>
+            <span class="hug-spark" style="left:78%;top:52%;animation-delay:1.5s"></span>
+            <span class="hug-spark" style="left:42%;top:25%;animation-delay:2s"></span>
+            <span class="hug-spark" style="left:61%;top:28%;animation-delay:1.8s"></span>
+        </div>
     </div>
 
     <div class="message">
@@ -2739,6 +3154,7 @@ canvas.addEventListener(
 const fallingScene = document.getElementById("fallingScene");
 const fallingMessagesContainer = document.getElementById("fallingMessages");
 const galaxyStarsContainer = document.getElementById("galaxyStars");
+const hugScene = document.getElementById("hugScene");
 
 const fallingMessageTexts = [
     "Lớp iuuuuu ❤️",
@@ -3020,6 +3436,27 @@ function drawEffects(time) {
     effectAnimationFrame = requestAnimationFrame(drawEffects);
 }
 
+let hugSceneTimer = null;
+
+function showHugScene() {
+    if (!fallingScene.classList.contains("active")) return;
+    if (hugScene.classList.contains("active")) return;
+
+    // Dừng sinh chữ mới, nhưng các chữ đang rơi vẫn được phép rơi hết.
+    if (fallingMessageTimer) {
+        clearInterval(fallingMessageTimer);
+        fallingMessageTimer = null;
+    }
+
+    // Làm chữ rơi mờ dần trước khi hai người xuất hiện.
+    fallingMessagesContainer.classList.add("hug-transition");
+
+    setTimeout(() => {
+        hugScene.classList.add("active");
+        hugScene.setAttribute("aria-hidden", "false");
+    }, 900);
+}
+
 function startGalaxyScene() {
     if (fallingScene.classList.contains("active")) return;
 
@@ -3035,10 +3472,16 @@ function startGalaxyScene() {
     }
 
     fallingMessageTimer = setInterval(createFallingMessage, 850);
+
+    /*
+     * Bắt đầu đếm 20 giây kể từ lúc thiên hà + chữ rơi xuất hiện.
+     * Sau 20 giây: chữ dừng sinh -> mờ dần -> hai người ôm nhau.
+     */
+    hugSceneTimer = setTimeout(showHugScene, 20000);
 }
 
-// Sau đúng 10 giây: tim 3D biến mất -> chuyển sang thiên hà + chữ rơi.
-setTimeout(startGalaxyScene, 10000);
+// Sau đúng 20 giây: tim 3D biến mất -> chuyển sang thiên hà + chữ rơi.
+setTimeout(startGalaxyScene, 20000);
 
 
 /* =========================================================
