@@ -2,17 +2,11 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Happy Anniversary 3D</title>
-  <link rel="icon" type="image/x-icon" href="images/heart.png">
+<link rel="icon" type="image/x-icon" href="images/heart.png">
 
 <style>
-
 * {
     margin: 0;
     padding: 0;
@@ -47,100 +41,54 @@ canvas {
     touch-action: none;
 }
 
-
-/* ================================
-   LOADING
-================================ */
-
 #loading {
-
     position: fixed;
     inset: 0;
-
     z-index: 100;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: #000;
-
     color: #ff63b8;
-
     font-size: 12px;
-
     letter-spacing: 5px;
-
-    transition:
-        opacity 1s ease,
-        visibility 1s ease;
+    transition: opacity 1s ease, visibility 1s ease;
 }
 
 #loading.hide {
-
     opacity: 0;
-
     visibility: hidden;
 }
 
-
-/* ================================
-   TEXT
-================================ */
-
 .message {
-
     position: fixed;
-
     left: 50%;
-
     bottom: 7%;
-
-    transform:
-        translateX(-50%);
-
+    transform: translateX(-50%);
     z-index: 5;
-
-    color:
-        rgba(255, 160, 220, .75);
-
-    font-size:
-        clamp(11px, 2vw, 16px);
-
-    letter-spacing:
-        4px;
-
-    white-space:
-        nowrap;
-
-    pointer-events:
-        none;
-
+    color: rgba(255, 160, 220, .75);
+    font-size: clamp(11px, 2vw, 16px);
+    letter-spacing: 4px;
+    white-space: nowrap;
+    pointer-events: none;
     text-shadow:
         0 0 8px #ff1493,
         0 0 18px #ff1493;
 }
-
 </style>
 </head>
-
 
 <body>
 
 <div id="app">
-
-    <div id="loading">
-        LOADING LOVE...
-    </div>
+    <div id="loading">LOADING LOVE...</div>
 
     <canvas id="canvas"></canvas>
 
     <div class="message">
         HAPPY ANNIVERSARY ❤️
     </div>
-
 </div>
-
 
 <audio
     id="bgMusic"
@@ -148,10 +96,6 @@ canvas {
     loop
     preload="auto"
 ></audio>
-
-<!-- ==========================================
-     THREE.JS
-=========================================== -->
 
 <script type="importmap">
 {
@@ -161,7 +105,6 @@ canvas {
     }
 }
 </script>
-
 
 <script type="module">
 
@@ -184,108 +127,93 @@ import {
 } from "three/addons/postprocessing/OutputPass.js";
 
 
-/* =====================================================
+/* =========================================================
    CONFIG
-===================================================== */
+========================================================= */
 
 const isMobile =
     window.innerWidth < 600;
 
-
 const CONFIG = {
 
-    /*
-     * Số particle tạo thành trái tim
-     *
-     * Desktop:
-     * 30.000
-     *
-     * Mobile:
-     * 15.000
-     */
-
+    // Hạt tạo thành trái tim
     heartParticles:
         isMobile
-            ? 1350
-            : 2100,
+            ? 1200
+            : 2200,
 
-
-    /*
-     * Particle background
-     */
-
+    // Sao nền
     stars:
         isMobile
             ? 350
             : 700,
 
-
-    /*
-     * Particle mặt đất
-     */
-
+    // Hạt mặt đất
     floorParticles:
         isMobile
-            ? 1800
-            : 3000,
+            ? 1500
+            : 2800,
 
-
-    /*
-     * Particle bay
-     */
-
+    // Tim nhỏ bay xung quanh
     floatingParticles:
         isMobile
-            ? 250
-            : 500
+            ? 18
+            : 40,
+
+    // Thời gian sao băng hình thành trái tim
+    formationDuration:
+        isMobile
+            ? 4.2
+            : 4.8,
+
+    // Độ dài đuôi sao băng
+    meteorTrail:
+        isMobile
+            ? 1.0
+            : 1.35,
+
+    // Vệ tinh / tiểu hành tinh phát sáng xung quanh trái tim
+    satellites:
+        isMobile
+            ? 7
+            : 11
 };
 
 
-/* =====================================================
+/* =========================================================
    BASIC
-===================================================== */
+========================================================= */
 
 const canvas =
-    document.getElementById(
-        "canvas"
-    );
+    document.getElementById("canvas");
 
 const loading =
-    document.getElementById(
-        "loading"
-    );
+    document.getElementById("loading");
 
 
-/* =====================================================
+/* =========================================================
    SCENE
-===================================================== */
+========================================================= */
 
 const scene =
     new THREE.Scene();
 
 scene.background =
-    new THREE.Color(
-        0x000000
-    );
+    new THREE.Color(0x000000);
 
 
-/* =====================================================
+/* =========================================================
    CAMERA
-===================================================== */
+========================================================= */
 
 const camera =
     new THREE.PerspectiveCamera(
-
         45,
-
         window.innerWidth /
         window.innerHeight,
-
         .1,
-
         1000
     );
-
 
 camera.position.set(
     0,
@@ -296,64 +224,45 @@ camera.position.set(
 );
 
 
-/* =====================================================
+/* =========================================================
    RENDERER
-===================================================== */
+========================================================= */
 
 const renderer =
     new THREE.WebGLRenderer({
-
         canvas,
-
         antialias: true,
-
-        powerPreference:
-            "high-performance"
+        powerPreference: "high-performance"
     });
 
-
 renderer.setPixelRatio(
-
     Math.min(
-
         window.devicePixelRatio,
-
-        isMobile
-            ? 1.5
-            : 2
+        isMobile ? 1.5 : 2
     )
 );
 
-
 renderer.setSize(
-
     window.innerWidth,
-
     window.innerHeight
 );
-
 
 renderer.outputColorSpace =
     THREE.SRGBColorSpace;
 
-
 renderer.toneMapping =
     THREE.ACESFilmicToneMapping;
-
 
 renderer.toneMappingExposure =
     .9;
 
 
-/* =====================================================
+/* =========================================================
    BLOOM
-===================================================== */
+========================================================= */
 
 const composer =
-    new EffectComposer(
-        renderer
-    );
-
+    new EffectComposer(renderer);
 
 composer.addPass(
     new RenderPass(
@@ -362,55 +271,39 @@ composer.addPass(
     )
 );
 
+const bloom =
+    new UnrealBloomPass(
+        new THREE.Vector2(
+            window.innerWidth,
+            window.innerHeight
+        ),
+        isMobile ? .28 : .48,
+        isMobile ? .32 : .38,
+        .08
+    );
 
-const bloom = new UnrealBloomPass(
-    new THREE.Vector2(
-        window.innerWidth,
-        window.innerHeight
-    ),
-    isMobile ? 0.21 : 0.4,
-    isMobile ? 0.32 : 0.35,
-    0.08
-);
-
-
-composer.addPass(
-    bloom
-);
-
+composer.addPass(bloom);
 
 composer.addPass(
     new OutputPass()
 );
 
 
-/* =====================================================
+/* =========================================================
    HEART GROUP
-===================================================== */
+========================================================= */
 
 const heartGroup =
     new THREE.Group();
 
-scene.add(
-    heartGroup
-);
+scene.add(heartGroup);
 
 
-/* =====================================================
+/* =========================================================
    HEART FUNCTION
-===================================================== */
+========================================================= */
 
-function heartFunction(
-    x,
-    y
-) {
-
-    /*
-     * Phương trình trái tim
-     *
-     * (x² + y² - 1)³
-     * - x²y³ <= 0
-     */
+function heartFunction(x, y) {
 
     const a =
         x * x +
@@ -418,8 +311,7 @@ function heartFunction(
         1;
 
     return (
-        a * a * a
-        -
+        a * a * a -
         x * x *
         y * y *
         y
@@ -427,60 +319,50 @@ function heartFunction(
 }
 
 
-/* =====================================================
-   CREATE HEART PARTICLES
-===================================================== */
+/* =========================================================
+   HEART METEORS
+   Sao băng rơi từ trên xuống và ghép thành trái tim
+========================================================= */
 
-function createHeartParticles() {
+function createHeartMeteors() {
 
     const count =
         CONFIG.heartParticles;
 
+    const targetPositions =
+        new Float32Array(count * 3);
 
-    const positions =
-        new Float32Array(
-            count * 3
-        );
+    const startPositions =
+        new Float32Array(count * 3);
 
+    const currentPositions =
+        new Float32Array(count * 3);
 
     const colors =
-        new Float32Array(
-            count * 3
-        );
-
+        new Float32Array(count * 3);
 
     const sizes =
-        new Float32Array(
-            count
-        );
-
+        new Float32Array(count);
 
     const randoms =
-        new Float32Array(
-            count
-        );
+        new Float32Array(count);
 
+    const delays =
+        new Float32Array(count);
+
+    const velocities =
+        new Float32Array(count);
 
     let index = 0;
 
+    const scale =
+        isMobile ? 4.0 : 4.5;
+
 
     /*
-     * Heart scale
+     * Tạo ngẫu nhiên các điểm bên trong trái tim
      */
-
-    const scale =
-        isMobile
-            ? 4.0
-            : 4.5;
-
-
-    while (
-        index < count
-    ) {
-
-        /*
-         * Random 2D point
-         */
+    while (index < count) {
 
         const x =
             THREE.MathUtils.randFloat(
@@ -488,42 +370,23 @@ function createHeartParticles() {
                 1.5
             );
 
-
         const y =
             THREE.MathUtils.randFloat(
                 -1.35,
                 1.25
             );
 
-
-        /*
-         * Heart shape
-         */
-
         if (
-            heartFunction(
-                x,
-                y
-            ) > 0
+            heartFunction(x, y) > 0
         ) {
             continue;
         }
-
-
-        /*
-         * Normalize
-         */
 
         const nx =
             x / 1.5;
 
         const ny =
             y / 1.35;
-
-
-        /*
-         * Center density
-         */
 
         const center =
             Math.max(
@@ -535,11 +398,6 @@ function createHeartParticles() {
                 )
             );
 
-
-        /*
-         * Tạo chiều sâu 3D
-         */
-
         const depth =
             (
                 Math.random() -
@@ -550,82 +408,144 @@ function createHeartParticles() {
                 center * 3.2
             );
 
-
-        /*
-         * Hơi làm hạt lệch tự nhiên
-         */
-
         const noise =
             (
                 Math.random() -
                 .5
             ) * .06;
 
-
-        positions[
-            index * 3
-        ] =
+        const tx =
             x * scale +
             noise;
 
-
-        positions[
-            index * 3 + 1
-        ] =
+        const ty =
             y * scale +
             noise;
 
-
-        positions[
-            index * 3 + 2
-        ] =
+        const tz =
             depth;
 
 
         /*
-         * Particle size
+         * Vị trí đích
          */
+        targetPositions[index * 3] =
+            tx;
 
-        sizes[index] =
+        targetPositions[index * 3 + 1] =
+            ty;
+
+        targetPositions[index * 3 + 2] =
+            tz;
+
+
+        /*
+         * Sao băng bắt đầu phía trên màn hình.
+         *
+         * X gần với vị trí đích nhưng có độ lệch lớn,
+         * để nhìn giống mưa sao băng.
+         */
+        const sx =
+            tx +
             THREE.MathUtils.randFloat(
-                .35,
-                1.65
+                -5.5,
+                5.5
+            );
+
+        const sy =
+            THREE.MathUtils.randFloat(
+                9.0,
+                17.0
+            );
+
+        const sz =
+            tz +
+            THREE.MathUtils.randFloat(
+                -5,
+                4
+            );
+
+        startPositions[index * 3] =
+            sx;
+
+        startPositions[index * 3 + 1] =
+            sy;
+
+        startPositions[index * 3 + 2] =
+            sz;
+
+        currentPositions[index * 3] =
+            sx;
+
+        currentPositions[index * 3 + 1] =
+            sy;
+
+        currentPositions[index * 3 + 2] =
+            sz;
+
+
+        /*
+         * Điểm càng thấp thì rơi trước.
+         * Sau đó lần lượt tạo phần trên của trái tim.
+         */
+        const verticalOrder =
+            THREE.MathUtils.clamp(
+                (1.15 - y) / 2.5,
+                0,
+                1
+            );
+
+        delays[index] =
+            verticalOrder *
+            .52 +
+            Math.random() *
+            .22;
+
+
+        /*
+         * Vận tốc mỗi sao băng
+         */
+        velocities[index] =
+            THREE.MathUtils.randFloat(
+                .85,
+                1.2
             );
 
 
         /*
-         * Random
+         * Kích thước đầu sao băng
          */
+        sizes[index] =
+            THREE.MathUtils.randFloat(
+                .45,
+                1.8
+            );
+
 
         randoms[index] =
             Math.random();
 
 
         /*
-         * Màu
+         * Màu hồng neon
          */
-
         const color =
             new THREE.Color();
 
-
-        const randomColor =
+        const r =
             Math.random();
 
-
-        if (
-            randomColor < .55
-        ) {
+        if (r < .55) {
 
             color.setRGB(
                 1,
                 THREE.MathUtils.randFloat(
-                    .08,
-                    .3
+                    .05,
+                    .28
                 ),
                 THREE.MathUtils.randFloat(
-                    .25,
-                    .55
+                    .28,
+                    .62
                 )
             );
 
@@ -635,211 +555,183 @@ function createHeartParticles() {
                 1,
                 THREE.MathUtils.randFloat(
                     .25,
-                    .55
+                    .65
                 ),
                 THREE.MathUtils.randFloat(
-                    .5,
-                    .85
+                    .55,
+                    .95
                 )
             );
         }
 
-
-        colors[
-            index * 3
-        ] =
+        colors[index * 3] =
             color.r;
 
-
-        colors[
-            index * 3 + 1
-        ] =
+        colors[index * 3 + 1] =
             color.g;
 
-
-        colors[
-            index * 3 + 2
-        ] =
+        colors[index * 3 + 2] =
             color.b;
-
 
         index++;
     }
 
 
-    /* =================================
-       GEOMETRY
-    ================================= */
+    /* =====================================================
+       METEOR HEADS
+    ===================================================== */
 
-    const geometry =
+    const headGeometry =
         new THREE.BufferGeometry();
 
-
-    geometry.setAttribute(
-
+    headGeometry.setAttribute(
         "position",
-
         new THREE.BufferAttribute(
-            positions,
+            currentPositions,
             3
         )
     );
 
-
-    geometry.setAttribute(
-
+    headGeometry.setAttribute(
         "color",
-
         new THREE.BufferAttribute(
             colors,
             3
         )
     );
 
-
-    geometry.setAttribute(
-
+    headGeometry.setAttribute(
         "aSize",
-
         new THREE.BufferAttribute(
             sizes,
             1
         )
     );
 
-
-    geometry.setAttribute(
-
+    headGeometry.setAttribute(
         "aRandom",
-
         new THREE.BufferAttribute(
             randoms,
             1
         )
     );
 
+    headGeometry.setAttribute(
+        "aDelay",
+        new THREE.BufferAttribute(
+            delays,
+            1
+        )
+    );
 
-    /* =================================
-       MATERIAL
-    ================================= */
 
-    const material =
+    const headMaterial =
         new THREE.ShaderMaterial({
 
-            transparent:
-                true,
+            transparent: true,
 
-            depthWrite:
-                false,
+            depthWrite: false,
 
             blending:
                 THREE.AdditiveBlending,
 
-            vertexColors:
-                true,
-
+            vertexColors: true,
 
             uniforms: {
-
                 uTime: {
                     value: 0
                 },
 
-                uBeat: {
-                    value: 1
+                uFormation: {
+                    value: 0
                 }
             },
-
 
             vertexShader: `
 
                 attribute float aSize;
                 attribute float aRandom;
+                attribute float aDelay;
 
                 uniform float uTime;
-                uniform float uBeat;
+                uniform float uFormation;
 
                 varying vec3 vColor;
                 varying float vRandom;
-
+                varying float vProgress;
 
                 void main() {
 
                     vec3 p =
                         position;
 
-
-                    /*
-                     * Particle chuyển động nhẹ
-                     */
-
-                    p.x +=
-                        sin(
-                            uTime * 1.2 +
-                            aRandom * 30.0
-                        ) * .018;
-
-
-                    p.y +=
-                        cos(
-                            uTime * 1.4 +
-                            aRandom * 25.0
-                        ) * .018;
-
-
-                    /*
-                     * Heartbeat
-                     */
-
-                    p *= uBeat;
-
-
-                    /*
-                     * 3D camera
-                     */
-
-                    vec4 mvPosition =
-                        modelViewMatrix *
-                        vec4(
-                            p,
+                    float localProgress =
+                        clamp(
+                            (
+                                uFormation -
+                                aDelay
+                            ) /
+                            (1.0 - aDelay),
+                            0.0,
                             1.0
                         );
 
+                    /*
+                     * Ease-out:
+                     * rơi nhanh rồi chậm lại khi chạm tim
+                     */
+                    float eased =
+                        1.0 -
+                        pow(
+                            1.0 -
+                            localProgress,
+                            3.0
+                        );
 
                     /*
-                     * Perspective
+                     * Tạm thời vẫn dùng position
+                     * vì JS cập nhật currentPositions.
                      */
+
+                    float glowScale =
+                        1.0 +
+                        (
+                            1.0 -
+                            localProgress
+                        ) * .55;
+
+                    vec4 mvPosition =
+                        modelViewMatrix *
+                        vec4(p, 1.0);
 
                     gl_PointSize =
                         aSize *
+                        glowScale *
                         (
                             230.0 /
                             -mvPosition.z
                         );
 
-
                     gl_Position =
                         projectionMatrix *
                         mvPosition;
 
-
                     vColor =
                         color;
 
-
                     vRandom =
                         aRandom;
+
+                    vProgress =
+                        localProgress;
                 }
-
             `,
-
 
             fragmentShader: `
 
                 varying vec3 vColor;
-
                 varying float vRandom;
-
+                varying float vProgress;
 
                 void main() {
 
@@ -847,21 +739,12 @@ function createHeartParticles() {
                         gl_PointCoord -
                         .5;
 
-
                     float d =
                         length(uv);
 
-
-                    if (
-                        d > .5
-                    ) {
+                    if (d > .5) {
                         discard;
                     }
-
-
-                    /*
-                     * Glow particle
-                     */
 
                     float glow =
                         1.0 -
@@ -871,73 +754,378 @@ function createHeartParticles() {
                             d
                         );
 
-
-                    /*
-                     * Random brightness
-                     */
-
                     float brightness =
-                        .65 +
+                        .8 +
                         fract(
                             vRandom * 13.7
-                        ) * .7;
+                        ) * .8;
 
+                    /*
+                     * Đầu sao băng rất sáng
+                     */
+                    brightness *=
+                        1.0 +
+                        (1.0 - vProgress) *
+                        .7;
 
                     vec3 finalColor =
                         vColor *
                         brightness;
 
-
-                    /*
-                     * Viền glow
-                     */
-
                     finalColor +=
                         vec3(
                             1.0,
-                            .02,
-                            .12
-                        )
-                        *
-                        glow
-                        *
-                        .015;
-
+                            .04,
+                            .2
+                        ) *
+                        glow *
+                        .08;
 
                     gl_FragColor =
                         vec4(
                             finalColor,
-                            glow * .9
+                            glow
                         );
                 }
-
             `
         });
 
 
-    const particles =
+    const heads =
         new THREE.Points(
-            geometry,
-            material
+            headGeometry,
+            headMaterial
+        );
+
+    heartGroup.add(heads);
+
+
+    /* =====================================================
+       METEOR TRAILS
+    ===================================================== */
+
+    const trailPositions =
+        new Float32Array(
+            count * 2 * 3
+        );
+
+    const trailColors =
+        new Float32Array(
+            count * 2 * 3
         );
 
 
-    heartGroup.add(
-        particles
+    for (let i = 0; i < count; i++) {
+
+        const px =
+            currentPositions[i * 3];
+
+        const py =
+            currentPositions[i * 3 + 1];
+
+        const pz =
+            currentPositions[i * 3 + 2];
+
+        trailPositions[i * 6] =
+            px;
+
+        trailPositions[i * 6 + 1] =
+            py;
+
+        trailPositions[i * 6 + 2] =
+            pz;
+
+        trailPositions[i * 6 + 3] =
+            px;
+
+        trailPositions[i * 6 + 4] =
+            py +
+            CONFIG.meteorTrail;
+
+        trailPositions[i * 6 + 5] =
+            pz;
+
+
+        const r =
+            colors[i * 3];
+
+        const g =
+            colors[i * 3 + 1];
+
+        const b =
+            colors[i * 3 + 2];
+
+        trailColors[i * 6] =
+            r;
+
+        trailColors[i * 6 + 1] =
+            g;
+
+        trailColors[i * 6 + 2] =
+            b;
+
+        trailColors[i * 6 + 3] =
+            r * .18;
+
+        trailColors[i * 6 + 4] =
+            g * .18;
+
+        trailColors[i * 6 + 5] =
+            b * .18;
+    }
+
+
+    const trailGeometry =
+        new THREE.BufferGeometry();
+
+    trailGeometry.setAttribute(
+        "position",
+        new THREE.BufferAttribute(
+            trailPositions,
+            3
+        )
+    );
+
+    trailGeometry.setAttribute(
+        "color",
+        new THREE.BufferAttribute(
+            trailColors,
+            3
+        )
     );
 
 
-    return particles;
+    const trailMaterial =
+        new THREE.LineBasicMaterial({
+
+            vertexColors: true,
+
+            transparent: true,
+
+            opacity: .7,
+
+            depthWrite: false,
+
+            blending:
+                THREE.AdditiveBlending,
+
+            linewidth: 1
+        });
+
+
+    const trails =
+        new THREE.LineSegments(
+            trailGeometry,
+            trailMaterial
+        );
+
+    heartGroup.add(trails);
+
+
+    /*
+     * Hàm update được gọi mỗi frame
+     */
+    function update(time, formation) {
+
+        for (let i = 0; i < count; i++) {
+
+            const delay =
+                delays[i];
+
+            let progress =
+                THREE.MathUtils.clamp(
+                    (
+                        formation -
+                        delay
+                    ) /
+                    (1 - delay),
+                    0,
+                    1
+                );
+
+            /*
+             * Ease-out
+             */
+            const eased =
+                1 -
+                Math.pow(
+                    1 - progress,
+                    3
+                );
+
+
+            const sx =
+                startPositions[i * 3];
+
+            const sy =
+                startPositions[i * 3 + 1];
+
+            const sz =
+                startPositions[i * 3 + 2];
+
+            const tx =
+                targetPositions[i * 3];
+
+            const ty =
+                targetPositions[i * 3 + 1];
+
+            const tz =
+                targetPositions[i * 3 + 2];
+
+
+            /*
+             * Đường rơi có một chút cong/ngẫu nhiên.
+             */
+            const curve =
+                Math.sin(
+                    progress *
+                    Math.PI
+                ) *
+                (
+                    .15 +
+                    randoms[i] * .25
+                );
+
+
+            const x =
+                THREE.MathUtils.lerp(
+                    sx,
+                    tx,
+                    eased
+                ) +
+                curve *
+                Math.sin(
+                    randoms[i] * 20
+                );
+
+
+            const y =
+                THREE.MathUtils.lerp(
+                    sy,
+                    ty,
+                    eased
+                );
+
+
+            const z =
+                THREE.MathUtils.lerp(
+                    sz,
+                    tz,
+                    eased
+                );
+
+
+            currentPositions[i * 3] =
+                x;
+
+            currentPositions[i * 3 + 1] =
+                y;
+
+            currentPositions[i * 3 + 2] =
+                z;
+
+
+            /*
+             * Đuôi sao băng hướng ngược chiều rơi.
+             */
+            const tailLength =
+                CONFIG.meteorTrail *
+                (
+                    1 -
+                    progress * .72
+                );
+
+
+            trailPositions[i * 6] =
+                x;
+
+            trailPositions[i * 6 + 1] =
+                y;
+
+            trailPositions[i * 6 + 2] =
+                z;
+
+            trailPositions[i * 6 + 3] =
+                x;
+
+            trailPositions[i * 6 + 1] =
+                y +
+                tailLength;
+
+            trailPositions[i * 6 + 2] =
+                z;
+
+
+            /*
+             * Sau khi hạt chạm trái tim,
+             * đuôi biến mất.
+             */
+            const alpha =
+                progress < 1
+                    ? 1
+                    : 0;
+
+            trailColors[i * 6 + 3] =
+                colors[i * 3] *
+                .18 *
+                alpha;
+
+            trailColors[i * 6 + 4] =
+                colors[i * 3 + 1] *
+                .18 *
+                alpha;
+
+            trailColors[i * 6 + 5] =
+                colors[i * 3 + 2] *
+                .18 *
+                alpha;
+        }
+
+
+        headGeometry.attributes.position.needsUpdate =
+            true;
+
+        trailGeometry.attributes.position.needsUpdate =
+            true;
+
+        trailGeometry.attributes.color.needsUpdate =
+            true;
+
+
+        headMaterial.uniforms.uTime.value =
+            time;
+
+        headMaterial.uniforms.uFormation.value =
+            formation;
+
+        /*
+         * Khi hình thành xong:
+         * sao băng tắt, hạt tim tiếp tục phát sáng.
+         */
+        trailMaterial.opacity =
+            Math.max(
+                0,
+                1 -
+                formation
+            ) * .72;
+    }
+
+
+    return {
+        heads,
+        trails,
+        update
+    };
 }
 
 
-const heartParticles =
-    createHeartParticles();
+const heartMeteorSystem =
+    createHeartMeteors();
 
 
-/* =====================================================
+/* =========================================================
    HEART POSITION
-===================================================== */
+========================================================= */
 
 heartGroup.position.y =
     isMobile
@@ -945,21 +1133,19 @@ heartGroup.position.y =
         : 1.3;
 
 
-/* =====================================================
+/* =========================================================
    BACKGROUND STARS
-===================================================== */
+========================================================= */
 
 function createStars() {
 
     const count =
         CONFIG.stars;
 
-
     const positions =
         new Float32Array(
             count * 3
         );
-
 
     const colors =
         new Float32Array(
@@ -973,40 +1159,27 @@ function createStars() {
         i++
     ) {
 
-        positions[
-            i * 3
-        ] =
+        positions[i * 3] =
             THREE.MathUtils.randFloat(
                 -35,
                 35
             );
 
-
-        positions[
-            i * 3 + 1
-        ] =
+        positions[i * 3 + 1] =
             THREE.MathUtils.randFloat(
                 -25,
                 30
             );
 
-
-        positions[
-            i * 3 + 2
-        ] =
+        positions[i * 3 + 2] =
             THREE.MathUtils.randFloat(
                 -40,
                 -8
             );
 
 
-        /*
-         * Slight warm stars
-         */
-
         const c =
             new THREE.Color();
-
 
         c.setRGB(
             1,
@@ -1020,22 +1193,13 @@ function createStars() {
             )
         );
 
-
-        colors[
-            i * 3
-        ] =
+        colors[i * 3] =
             c.r;
 
-
-        colors[
-            i * 3 + 1
-        ] =
+        colors[i * 3 + 1] =
             c.g;
 
-
-        colors[
-            i * 3 + 2
-        ] =
+        colors[i * 3 + 2] =
             c.b;
     }
 
@@ -1043,22 +1207,16 @@ function createStars() {
     const geometry =
         new THREE.BufferGeometry();
 
-
     geometry.setAttribute(
-
         "position",
-
         new THREE.BufferAttribute(
             positions,
             3
         )
     );
 
-
     geometry.setAttribute(
-
         "color",
-
         new THREE.BufferAttribute(
             colors,
             3
@@ -1074,17 +1232,13 @@ function createStars() {
                     ? .055
                     : .07,
 
-            vertexColors:
-                true,
+            vertexColors: true,
 
-            transparent:
-                true,
+            transparent: true,
 
-            opacity:
-                .65,
+            opacity: .65,
 
-            depthWrite:
-                false,
+            depthWrite: false,
 
             blending:
                 THREE.AdditiveBlending
@@ -1097,11 +1251,7 @@ function createStars() {
             material
         );
 
-
-    scene.add(
-        stars
-    );
-
+    scene.add(stars);
 
     return stars;
 }
@@ -1111,21 +1261,19 @@ const stars =
     createStars();
 
 
-/* =====================================================
-   FLOOR PARTICLES
-===================================================== */
+/* =========================================================
+   FLOOR
+========================================================= */
 
 function createFloor() {
 
     const count =
         CONFIG.floorParticles;
 
-
     const positions =
         new Float32Array(
             count * 3
         );
-
 
     const colors =
         new Float32Array(
@@ -1139,84 +1287,47 @@ function createFloor() {
         i++
     ) {
 
-        /*
-         * Circle distribution
-         */
-
         const angle =
             Math.random() *
             Math.PI *
             2;
 
-
-        /*
-         * Concentrate in center
-         */
-
         const radius =
             Math.pow(
                 Math.random(),
                 .65
-            ) *
-            8;
-
+            ) * 8;
 
         const x =
-            Math.cos(
-                angle
-            ) *
+            Math.cos(angle) *
             radius;
-
 
         const z =
-            Math.sin(
-                angle
-            ) *
+            Math.sin(angle) *
             radius;
-
-
-        /*
-         * Floor dạng lõm
-         */
 
         const y =
             -4.0 -
             radius * .07;
 
 
-        positions[
-            i * 3
-        ] =
+        positions[i * 3] =
             x;
 
-
-        positions[
-            i * 3 + 1
-        ] =
+        positions[i * 3 + 1] =
             y;
 
-
-        positions[
-            i * 3 + 2
-        ] =
+        positions[i * 3 + 2] =
             z;
 
-
-        /*
-         * Màu
-         */
 
         const c =
             new THREE.Color();
 
-
         const r =
             Math.random();
 
-
-        if (
-            r < .65
-        ) {
+        if (r < .65) {
 
             c.setRGB(
                 1,
@@ -1243,21 +1354,13 @@ function createFloor() {
         }
 
 
-        colors[
-            i * 3
-        ] =
+        colors[i * 3] =
             c.r;
 
-
-        colors[
-            i * 3 + 1
-        ] =
+        colors[i * 3 + 1] =
             c.g;
 
-
-        colors[
-            i * 3 + 2
-        ] =
+        colors[i * 3 + 2] =
             c.b;
     }
 
@@ -1265,22 +1368,16 @@ function createFloor() {
     const geometry =
         new THREE.BufferGeometry();
 
-
     geometry.setAttribute(
-
         "position",
-
         new THREE.BufferAttribute(
             positions,
             3
         )
     );
 
-
     geometry.setAttribute(
-
         "color",
-
         new THREE.BufferAttribute(
             colors,
             3
@@ -1296,17 +1393,13 @@ function createFloor() {
                     ? .055
                     : .07,
 
-            vertexColors:
-                true,
+            vertexColors: true,
 
-            transparent:
-                true,
+            transparent: true,
 
-            opacity:
-                .65,
+            opacity: .65,
 
-            depthWrite:
-                false,
+            depthWrite: false,
 
             blending:
                 THREE.AdditiveBlending
@@ -1319,11 +1412,7 @@ function createFloor() {
             material
         );
 
-
-    scene.add(
-        floor
-    );
-
+    scene.add(floor);
 
     return floor;
 }
@@ -1333,61 +1422,39 @@ const floor =
     createFloor();
 
 
-/* =====================================================
+/* =========================================================
    TEXT RING
-===================================================== */
+========================================================= */
 
 const textGroup =
     new THREE.Group();
 
-
-scene.add(
-    textGroup
-);
-
+scene.add(textGroup);
 
 const messages = [
 
     "Yêu em mãi ❤️",
-
     "Cảm ơn em ❤️",
-
     "Anh yêu em ❤️",
-
     "Mãi bên nhau ❤️",
-
     "Love you ❤️",
-
     "Forever ❤️",
-
     "Yêu em nhiều ❤️",
-
     "My love ❤️"
+
 ];
 
 
-function createTextTexture(
-    text
-) {
+function createTextTexture(text) {
 
     const canvas =
-        document.createElement(
-            "canvas"
-        );
+        document.createElement("canvas");
 
-
-    canvas.width =
-        512;
-
-    canvas.height =
-        100;
-
+    canvas.width = 512;
+    canvas.height = 100;
 
     const ctx =
-        canvas.getContext(
-            "2d"
-        );
-
+        canvas.getContext("2d");
 
     ctx.clearRect(
         0,
@@ -1396,28 +1463,23 @@ function createTextTexture(
         100
     );
 
-
-    ctx.font = "bold 32px Arial";
+    ctx.font =
+        "bold 32px Arial";
 
     ctx.textAlign =
         "center";
 
-
     ctx.textBaseline =
         "middle";
-
 
     ctx.shadowColor =
         "#ff1493";
 
-
     ctx.shadowBlur =
         12;
 
-
     ctx.fillStyle =
         "rgba(255,255,255,.85)";
-
 
     ctx.fillText(
         text,
@@ -1425,16 +1487,13 @@ function createTextTexture(
         50
     );
 
-
     const texture =
         new THREE.CanvasTexture(
             canvas
         );
 
-
     texture.colorSpace =
         THREE.SRGBColorSpace;
-
 
     return texture;
 }
@@ -1458,7 +1517,6 @@ function createTextRing() {
                 createTextTexture(
                     message
                 );
-
 
             const material =
                 new THREE.SpriteMaterial({
@@ -1496,18 +1554,12 @@ function createTextRing() {
 
 
             sprite.position.x =
-                Math.cos(
-                    angle
-                ) *
+                Math.cos(angle) *
                 radius;
-
 
             sprite.position.z =
-                Math.sin(
-                    angle
-                ) *
+                Math.sin(angle) *
                 radius;
-
 
             sprite.position.y =
                 -4.1;
@@ -1525,14 +1577,8 @@ function createTextRing() {
                 1
             );
 
-
-            /*
-             * Chữ nằm theo vòng tròn
-             */
-
             sprite.rotation.y =
                 -angle;
-
 
             textGroup.add(
                 sprite
@@ -1541,55 +1587,747 @@ function createTextRing() {
     );
 }
 
-
 createTextRing();
 
 
-/* =====================================================
+
+/* =========================================================
+   SATELLITES / ORBITING PLANETS
+   Các vệ tinh phát sáng quay quanh trái tim
+========================================================= */
+
+function createSatelliteTexture() {
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = 128;
+    canvas.height = 128;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    const gradient =
+        ctx.createRadialGradient(
+            64,
+            58,
+            5,
+            64,
+            64,
+            58
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(255,220,250,1)"
+    );
+
+    gradient.addColorStop(
+        .2,
+        "rgba(255,95,190,.98)"
+    );
+
+    gradient.addColorStop(
+        .58,
+        "rgba(150,20,130,.75)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(20,0,35,1)"
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        64,
+        64,
+        48,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+     * Bề mặt hành tinh
+     */
+    for (let i = 0; i < 28; i++) {
+
+        const x =
+            THREE.MathUtils.randFloat(
+                20,
+                108
+            );
+
+        const y =
+            THREE.MathUtils.randFloat(
+                20,
+                108
+            );
+
+        const radius =
+            THREE.MathUtils.randFloat(
+                1,
+                7
+            );
+
+        ctx.fillStyle =
+            `rgba(255,120,220,${THREE.MathUtils.randFloat(.08,.28)})`;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+
+
+    return new THREE.CanvasTexture(
+        canvas
+    );
+}
+
+
+function createSatelliteRingTexture() {
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = 256;
+    canvas.height = 256;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.translate(
+        128,
+        128
+    );
+
+    ctx.scale(
+        1,
+        .34
+    );
+
+    const gradient =
+        ctx.createLinearGradient(
+            -110,
+            0,
+            110,
+            0
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(255,40,180,0)"
+    );
+
+    gradient.addColorStop(
+        .25,
+        "rgba(255,90,210,.55)"
+    );
+
+    gradient.addColorStop(
+        .5,
+        "rgba(255,220,255,.95)"
+    );
+
+    gradient.addColorStop(
+        .75,
+        "rgba(255,90,210,.55)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(255,40,180,0)"
+    );
+
+    ctx.strokeStyle =
+        gradient;
+
+    ctx.lineWidth =
+        9;
+
+    ctx.shadowColor =
+        "#ff1493";
+
+    ctx.shadowBlur =
+        18;
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        0,
+        105,
+        105,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    return new THREE.CanvasTexture(
+        canvas
+    );
+}
+
+
+function createSatelliteSystem() {
+
+    const group =
+        new THREE.Group();
+
+    scene.add(group);
+
+    const planetTexture =
+        createSatelliteTexture();
+
+    const ringTexture =
+        createSatelliteRingTexture();
+
+
+    /*
+     * Các quỹ đạo vệ tinh không hiển thị
+     * nhưng vệ tinh chuyển động theo các ellipse khác nhau.
+     */
+    const satelliteData = [];
+
+
+    for (
+        let i = 0;
+        i < CONFIG.satellites;
+        i++
+    ) {
+
+        const sizeFactor =
+            Math.random();
+
+        const isLarge =
+            i === 0 ||
+            (
+                i === 1 &&
+                !isMobile
+            );
+
+
+        const size =
+            isLarge
+                ? THREE.MathUtils.randFloat(
+                    .65,
+                    1.05
+                )
+                : THREE.MathUtils.randFloat(
+                    .22,
+                    .52
+                );
+
+
+        /*
+         * Hành tinh
+         */
+        const planetMaterial =
+            new THREE.SpriteMaterial({
+
+                map:
+                    planetTexture,
+
+                color:
+                    Math.random() > .45
+                        ? 0xff42b5
+                        : 0xd42cff,
+
+                transparent:
+                    true,
+
+                opacity:
+                    THREE.MathUtils.randFloat(
+                        .62,
+                        .92
+                    ),
+
+                depthWrite:
+                    false,
+
+                blending:
+                    THREE.AdditiveBlending
+            });
+
+
+        const planet =
+            new THREE.Sprite(
+                planetMaterial
+            );
+
+
+        planet.scale.set(
+            size,
+            size,
+            1
+        );
+
+
+        /*
+         * Một số vệ tinh có vòng hành tinh.
+         */
+        const hasRing =
+            isLarge ||
+            Math.random() > .42;
+
+
+        let ring = null;
+
+
+        if (hasRing) {
+
+            const ringMaterial =
+                new THREE.SpriteMaterial({
+
+                    map:
+                        ringTexture,
+
+                    color:
+                        Math.random() > .5
+                            ? 0xff55c8
+                            : 0xa832ff,
+
+                    transparent:
+                        true,
+
+                    opacity:
+                        THREE.MathUtils.randFloat(
+                            .45,
+                            .8
+                        ),
+
+                    depthWrite:
+                        false,
+
+                    blending:
+                        THREE.AdditiveBlending
+                });
+
+
+            ring =
+                new THREE.Sprite(
+                    ringMaterial
+                );
+
+
+            ring.scale.set(
+                size * 2.8,
+                size * .95,
+                1
+            );
+
+
+            ring.rotation.z =
+                THREE.MathUtils.randFloat(
+                    -.6,
+                    .6
+                );
+
+
+            planet.add(
+                ring
+            );
+        }
+
+
+        /*
+         * Vệ tinh nhỏ hơn thì ở xa hơn,
+         * vệ tinh lớn thì gần camera hơn.
+         */
+        const radiusX =
+            isLarge
+                ? THREE.MathUtils.randFloat(
+                    7.5,
+                    10.5
+                )
+                : THREE.MathUtils.randFloat(
+                    6.5,
+                    12.5
+                );
+
+
+        const radiusZ =
+            isLarge
+                ? THREE.MathUtils.randFloat(
+                    3.0,
+                    5.5
+                )
+                : THREE.MathUtils.randFloat(
+                    2.5,
+                    5.8
+                );
+
+
+        const vertical =
+            THREE.MathUtils.randFloat(
+                -1.2,
+                5.8
+            );
+
+
+        const angle =
+            (
+                i /
+                CONFIG.satellites
+            ) *
+            Math.PI *
+            2 +
+            THREE.MathUtils.randFloat(
+                -.4,
+                .4
+            );
+
+
+        const speed =
+            THREE.MathUtils.randFloat(
+                .055,
+                .14
+            ) *
+            (
+                i % 2 === 0
+                    ? 1
+                    : -1
+            );
+
+
+        const tilt =
+            THREE.MathUtils.randFloat(
+                -.55,
+                .55
+            );
+
+
+        const phase =
+            Math.random() *
+            Math.PI *
+            2;
+
+
+        group.add(
+            planet
+        );
+
+
+        satelliteData.push({
+
+            object:
+                planet,
+
+            ring,
+
+            radiusX,
+
+            radiusZ,
+
+            vertical,
+
+            angle,
+
+            speed,
+
+            tilt,
+
+            phase,
+
+            size
+        });
+    }
+
+
+    /*
+     * Một số đường quỹ đạo cực mờ để tạo cảm giác
+     * các vệ tinh thực sự đang bay trong không gian.
+     */
+    function createOrbitLine(
+        radiusX,
+        radiusZ,
+        y,
+        rotation
+    ) {
+
+        const points = [];
+
+        const segments = 100;
+
+        for (
+            let i = 0;
+            i <= segments;
+            i++
+        ) {
+
+            const angle =
+                (
+                    i /
+                    segments
+                ) *
+                Math.PI *
+                2;
+
+            points.push(
+                new THREE.Vector3(
+                    Math.cos(angle) *
+                    radiusX,
+
+                    y,
+
+                    Math.sin(angle) *
+                    radiusZ
+                )
+            );
+        }
+
+
+        const geometry =
+            new THREE.BufferGeometry()
+                .setFromPoints(
+                    points
+                );
+
+
+        const material =
+            new THREE.LineBasicMaterial({
+
+                color:
+                    0xff2aaa,
+
+                transparent:
+                    true,
+
+                opacity:
+                    .055,
+
+                depthWrite:
+                    false,
+
+                blending:
+                    THREE.AdditiveBlending
+            });
+
+
+        const line =
+            new THREE.Line(
+                geometry,
+                material
+            );
+
+
+        line.rotation.z =
+            rotation;
+
+        group.add(line);
+    }
+
+
+    createOrbitLine(
+        8.8,
+        3.6,
+        1.5,
+        -.2
+    );
+
+    createOrbitLine(
+        10.5,
+        4.7,
+        3.7,
+        .35
+    );
+
+    createOrbitLine(
+        7.2,
+        5.2,
+        -1.0,
+        -.5
+    );
+
+
+    function update(time) {
+
+        satelliteData.forEach(
+            data => {
+
+                data.angle +=
+                    data.speed *
+                    .012;
+
+
+                const a =
+                    data.angle;
+
+
+                let x =
+                    Math.cos(a) *
+                    data.radiusX;
+
+                let z =
+                    Math.sin(a) *
+                    data.radiusZ;
+
+
+                /*
+                 * Tilt quỹ đạo.
+                 */
+                const tiltedY =
+                    Math.sin(a) *
+                    data.radiusZ *
+                    Math.sin(
+                        data.tilt
+                    );
+
+
+                const y =
+                    data.vertical +
+                    tiltedY;
+
+
+                /*
+                 * Một chút chuyển động nổi.
+                 */
+                const floating =
+                    Math.sin(
+                        time *
+                        .45 +
+                        data.phase
+                    ) *
+                    .22;
+
+
+                data.object.position.set(
+                    x,
+                    y + floating,
+                    z
+                );
+
+
+                /*
+                 * Vệ tinh quay nhẹ.
+                 */
+                data.object.material.opacity =
+                    .58 +
+                    (
+                        Math.sin(
+                            time *
+                            1.3 +
+                            data.phase
+                        ) + 1
+                    ) *
+                    .16;
+
+
+                if (data.ring) {
+
+                    data.ring.rotation.z +=
+                        .0009;
+
+                    data.ring.material.opacity =
+                        .38 +
+                        (
+                            Math.sin(
+                                time *
+                                .9 +
+                                data.phase
+                            ) + 1
+                        ) *
+                        .12;
+                }
+
+
+                /*
+                 * Vệ tinh lớn hơn khi ở gần camera.
+                 */
+                const depthScale =
+                    THREE.MathUtils.clamp(
+                        1 -
+                        z / 20,
+                        .72,
+                        1.3
+                    );
+
+
+                data.object.scale.set(
+                    data.size *
+                    depthScale,
+
+                    data.size *
+                    depthScale,
+
+                    1
+                );
+            }
+        );
+
+
+        /*
+         * Toàn bộ hệ vệ tinh quay rất chậm,
+         * tạo cảm giác không gian 3D.
+         */
+        group.rotation.y =
+            time * .012;
+
+        group.rotation.x =
+            Math.sin(
+                time * .08
+            ) * .025;
+    }
+
+
+    return {
+        group,
+        update
+    };
+}
+
+
+const satelliteSystem =
+    createSatelliteSystem();
+
+
+/* =========================================================
    SMALL FLOATING HEARTS
-===================================================== */
+========================================================= */
 
 function createSmallHeartTexture() {
 
     const canvas =
-        document.createElement(
-            "canvas"
-        );
+        document.createElement("canvas");
 
-
-    canvas.width =
-        128;
-
-    canvas.height =
-        128;
-
+    canvas.width = 128;
+    canvas.height = 128;
 
     const ctx =
-        canvas.getContext(
-            "2d"
-        );
-
+        canvas.getContext("2d");
 
     ctx.translate(
         64,
         64
     );
 
-
     ctx.scale(
         1.3,
         1.3
     );
 
-
     ctx.beginPath();
-
 
     ctx.moveTo(
         0,
         35
     );
-
 
     ctx.bezierCurveTo(
         -50,
@@ -1600,7 +2338,6 @@ function createSmallHeartTexture() {
         -35
     );
 
-
     ctx.bezierCurveTo(
         -3,
         -35,
@@ -1609,7 +2346,6 @@ function createSmallHeartTexture() {
         0,
         -18
     );
-
 
     ctx.bezierCurveTo(
         0,
@@ -1620,7 +2356,6 @@ function createSmallHeartTexture() {
         -35
     );
 
-
     ctx.bezierCurveTo(
         35,
         -35,
@@ -1630,24 +2365,18 @@ function createSmallHeartTexture() {
         35
     );
 
-
     ctx.closePath();
-
 
     ctx.shadowColor =
         "#ff1493";
 
-
     ctx.shadowBlur =
         20;
-
 
     ctx.fillStyle =
         "#ff4bb2";
 
-
     ctx.fill();
-
 
     return new THREE.CanvasTexture(
         canvas
@@ -1660,15 +2389,11 @@ function createFloatingHearts() {
     const group =
         new THREE.Group();
 
-
     const texture =
         createSmallHeartTexture();
 
-
     const count =
-        isMobile
-            ? 20
-            : 45;
+        CONFIG.floatingParticles;
 
 
     for (
@@ -1684,13 +2409,11 @@ function createFloatingHearts() {
                     texture,
 
                 color:
-                    Math.random() >
-                    .5
+                    Math.random() > .5
                         ? 0xff5db8
                         : 0xffb7e1,
 
-                transparent:
-                    true,
+                transparent: true,
 
                 opacity:
                     THREE.MathUtils.randFloat(
@@ -1698,8 +2421,7 @@ function createFloatingHearts() {
                         .9
                     ),
 
-                depthWrite:
-                    false,
+                depthWrite: false,
 
                 blending:
                     THREE.AdditiveBlending
@@ -1750,24 +2472,17 @@ function createFloatingHearts() {
                 .3
             );
 
-
         sprite.scale.set(
             size,
             size,
             size
         );
 
-
-        group.add(
-            sprite
-        );
+        group.add(sprite);
     }
 
 
-    scene.add(
-        group
-    );
-
+    scene.add(group);
 
     return group;
 }
@@ -1777,50 +2492,33 @@ const floatingHearts =
     createFloatingHearts();
 
 
-/* =====================================================
+/* =========================================================
    MOUSE / TOUCH ROTATION
-===================================================== */
+========================================================= */
 
-let isDragging =
-    false;
-
+let isDragging = false;
 
 let lastX = 0;
-
 let lastY = 0;
 
+let targetRotationY = 0;
+let targetRotationX = 0;
 
-let targetRotationY =
-    0;
-
-
-let targetRotationX =
-    0;
-
-
-let currentRotationY =
-    0;
-
-
-let currentRotationX =
-    0;
+let currentRotationY = 0;
+let currentRotationX = 0;
 
 
 canvas.addEventListener(
     "pointerdown",
     event => {
 
-        isDragging =
-            true;
-
+        isDragging = true;
 
         lastX =
             event.clientX;
 
-
         lastY =
             event.clientY;
-
 
         canvas.setPointerCapture(
             event.pointerId
@@ -1833,30 +2531,23 @@ canvas.addEventListener(
     "pointermove",
     event => {
 
-        if (
-            !isDragging
-        ) {
+        if (!isDragging) {
             return;
         }
-
 
         const dx =
             event.clientX -
             lastX;
 
-
         const dy =
             event.clientY -
             lastY;
 
-
         targetRotationY +=
             dx * .008;
 
-
         targetRotationX +=
             dy * .004;
-
 
         targetRotationX =
             THREE.MathUtils.clamp(
@@ -1865,10 +2556,8 @@ canvas.addEventListener(
                 .45
             );
 
-
         lastX =
             event.clientX;
-
 
         lastY =
             event.clientY;
@@ -1879,9 +2568,7 @@ canvas.addEventListener(
 canvas.addEventListener(
     "pointerup",
     () => {
-
-        isDragging =
-            false;
+        isDragging = false;
     }
 );
 
@@ -1889,36 +2576,38 @@ canvas.addEventListener(
 canvas.addEventListener(
     "pointercancel",
     () => {
-
-        isDragging =
-            false;
+        isDragging = false;
     }
 );
 
 
-
-/* =====================================================
+/* =========================================================
    BACKGROUND MUSIC
-===================================================== */
+========================================================= */
 
 const bgMusic =
-    document.getElementById("bgMusic");
+    document.getElementById(
+        "bgMusic"
+    );
 
-bgMusic.volume = 0.35;
+bgMusic.volume = .35;
+
 
 async function playMusic() {
+
     try {
+
         await bgMusic.play();
+
     } catch (error) {
+
         console.log(
             "Autoplay bị trình duyệt chặn"
         );
     }
 }
 
-/*
- * Thử tự động phát khi mở trang
- */
+
 window.addEventListener(
     "load",
     () => {
@@ -1926,11 +2615,7 @@ window.addEventListener(
     }
 );
 
-/*
- * Mobile:
- * Khi người dùng chạm vào màn hình lần đầu
- * thì nhạc sẽ được phép phát.
- */
+
 const startMusic =
     () => {
 
@@ -1949,6 +2634,7 @@ const startMusic =
         );
     };
 
+
 document.addEventListener(
     "touchstart",
     startMusic,
@@ -1962,9 +2648,9 @@ document.addEventListener(
 );
 
 
-/* =====================================================
+/* =========================================================
    ANIMATION
-===================================================== */
+========================================================= */
 
 const clock =
     new THREE.Clock();
@@ -1981,13 +2667,42 @@ function animate() {
         clock.getElapsedTime();
 
 
-    /* =================================
-       AUTO ROTATE
-    ================================= */
+    /* =====================================================
+       FORMATION
+       0 = chưa có tim
+       1 = tim hoàn chỉnh
+    ===================================================== */
 
-    if (
-        !isDragging
-    ) {
+    const formation =
+        THREE.MathUtils.clamp(
+            time /
+            CONFIG.formationDuration,
+            0,
+            1
+        );
+
+
+    /*
+     * Sao băng rơi xuống tạo trái tim
+     */
+    heartMeteorSystem.update(
+        time,
+        formation
+    );
+
+    /*
+     * Vệ tinh / hành tinh xung quanh trái tim
+     */
+    satelliteSystem.update(
+        time
+    );
+
+
+    /* =====================================================
+       AUTO ROTATE
+    ===================================================== */
+
+    if (!isDragging) {
 
         targetRotationY +=
             .0018;
@@ -2000,7 +2715,6 @@ function animate() {
             currentRotationY
         ) * .04;
 
-
     currentRotationX +=
         (
             targetRotationX -
@@ -2008,21 +2722,16 @@ function animate() {
         ) * .04;
 
 
-    /*
-     * Trái tim xoay
-     */
-
     heartGroup.rotation.y =
         currentRotationY;
-
 
     heartGroup.rotation.x =
         currentRotationX;
 
 
-    /* =================================
+    /* =====================================================
        HEARTBEAT
-    ================================= */
+    ===================================================== */
 
     const beat =
         1 +
@@ -2038,66 +2747,51 @@ function animate() {
         .035;
 
 
-    heartParticles
-        .material
-        .uniforms
-        .uTime
-        .value =
-            time;
+    heartMeteorSystem.heads.scale.set(
+        beat,
+        beat,
+        beat
+    );
 
 
-    heartParticles
-        .material
-        .uniforms
-        .uBeat
-        .value =
-            beat;
+    /*
+     * Sau khi tim hoàn chỉnh,
+     * cho tim sáng nhấp nháy nhẹ.
+     */
+    heartMeteorSystem.heads.material.opacity =
+        .7 +
+        Math.sin(
+            time * 2
+        ) * .12;
 
 
-    /* =================================
-       PARTICLE TWINKLE
-    ================================= */
-
-    heartParticles
-        .material
-        .opacity =
-            .72 +
-            Math.sin(
-                time * 2
-            ) *
-            .12;
-
-
-    /* =================================
+    /* =====================================================
        STARS
-    ================================= */
+    ===================================================== */
 
     stars.rotation.y =
-        time *
-        .003;
+        time * .003;
 
 
-    /* =================================
+    /* =====================================================
        FLOOR
-    ================================= */
+    ===================================================== */
 
     floor.rotation.y =
-        time *
-        .012;
+        time * .012;
 
 
-    /* =================================
+    /* =====================================================
        TEXT RING
-    ================================= */
+    ===================================================== */
 
     textGroup.rotation.y =
-        time *
-        .045;
+        time * .045;
 
 
-    /* =================================
+    /* =====================================================
        FLOATING HEARTS
-    ================================= */
+    ===================================================== */
 
     floatingHearts
         .children
@@ -2107,11 +2801,9 @@ function animate() {
                 const data =
                     sprite.userData;
 
-
                 data.angle +=
                     data.speed *
                     .003;
-
 
                 sprite.position.x =
                     Math.cos(
@@ -2119,13 +2811,11 @@ function animate() {
                     ) *
                     data.radius;
 
-
                 sprite.position.z =
                     Math.sin(
                         data.angle
                     ) *
                     data.radius;
-
 
                 sprite.position.y =
                     data.y +
@@ -2135,7 +2825,6 @@ function animate() {
                     ) *
                     .45;
 
-
                 sprite.material.opacity =
                     .25 +
                     (
@@ -2143,23 +2832,20 @@ function animate() {
                             time * 2 +
                             data.phase
                         ) + 1
-                    ) *
-                    .25;
+                    ) * .25;
             }
         );
 
 
-    /* =================================
+    /* =====================================================
        CAMERA
-    ================================= */
+    ===================================================== */
 
     camera.position.y =
         1.5 +
         Math.sin(
             time * .25
-        ) *
-        .12;
-
+        ) * .12;
 
     camera.lookAt(
         0,
@@ -2168,9 +2854,9 @@ function animate() {
     );
 
 
-    /* =================================
+    /* =====================================================
        RENDER
-    ================================= */
+    ===================================================== */
 
     composer.render();
 }
@@ -2179,9 +2865,9 @@ function animate() {
 animate();
 
 
-/* =====================================================
+/* =========================================================
    RESIZE
-===================================================== */
+========================================================= */
 
 window.addEventListener(
     "resize",
@@ -2190,29 +2876,23 @@ window.addEventListener(
         const width =
             window.innerWidth;
 
-
         const height =
             window.innerHeight;
-
 
         camera.aspect =
             width / height;
 
-
         camera.updateProjectionMatrix();
-
 
         renderer.setSize(
             width,
             height
         );
 
-
         composer.setSize(
             width,
             height
         );
-
 
         bloom.resolution.set(
             width,
@@ -2222,9 +2902,9 @@ window.addEventListener(
 );
 
 
-/* =====================================================
+/* =========================================================
    START
-===================================================== */
+========================================================= */
 
 setTimeout(
     () => {
@@ -2234,7 +2914,7 @@ setTimeout(
         );
 
     },
-    800
+    500
 );
 
 </script>
